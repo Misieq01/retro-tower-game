@@ -1,11 +1,14 @@
 export const INITIALIZE_GAME = "INITIALIZE_GAME";
 export const START_GAME = "START_GAME";
 export const TICK_ACTION = "TICK_ACTION";
-export const UPDATE_MATRIX = "UPDATE_MATRIX";
 export const CLICK_HANDLER = "CLICK_HANDLER";
-
+  //BEFORE_INITIALIZATION
+  //INITIALIZED
+  //PLAYING
+  //WON
+  //LOST
 export interface InitialState {
-  gameState: string;
+  gameState: 'LOST' | 'WON' | 'PLAYING' |'INITIALIZATION';
   matrix: Array<Array<number>>;
   boardSize: Array<number>;
   padSize: number ;
@@ -41,9 +44,6 @@ interface ClickHandlerAction{
   type: typeof CLICK_HANDLER;
   payload: Cloak
 }
-interface UpdateMatrixAction{
-  type: typeof UPDATE_MATRIX;
-  payload: Array<Array<number>>
-}
 
-export type GameActionTypes = InitializeGameAction | StartGameAction | UpdateMatrixAction | TickAction | ClickHandlerAction;
+
+export type GameActionTypes = InitializeGameAction | StartGameAction | TickAction | ClickHandlerAction;

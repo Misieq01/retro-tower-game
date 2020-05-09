@@ -11,7 +11,7 @@
     &__wrapper{
         display: flex;
         flex-flow: column nowrap;
-        justify-content: flex-start;
+        justify-content: space-around;
         align-items: center;
         height: 200px;
     }
@@ -23,7 +23,15 @@
     }
     &__text{
         color:rgb(220, 220, 220);
+        font-size: 32px;
         font-family: 'Open Sans Condensed', sans-serif;
         text-shadow: -1px 0px 1px rgb(255, 120, 232);
+    }
+    &__restart-text{
+        color:rgb(220, 220, 220);
+        font-size: 24px;
+        font-family: 'Open Sans Condensed', sans-serif;
+        text-shadow: -1px 0px 1px rgb(255, 120, 232);
+        
     }
 }

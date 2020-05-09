@@ -1,21 +1,9 @@
-import {
-  InitialState,
-  GameActionTypes,
-  INITIALIZE_GAME,
-  START_GAME,
-  UPDATE_MATRIX,
-  TICK_ACTION,
-  CLICK_HANDLER,
-} from "./types";
+import { InitialState, GameActionTypes, INITIALIZE_GAME, START_GAME, TICK_ACTION, CLICK_HANDLER } from "./types";
+
+import { setUpBoard, bounce, setMoving, setPadPostion, trimPad, levelUpPad } from "../utils/gameControls";
 
 const initialState: InitialState = {
-  //game states:
-  //BEFORE_INITIALIZATION
-  //INITIALIZED
-  //PLAYING
-  //WON
-  //LOST
-  gameState: "BEFORE_INITIALIZATION",
+  gameState: 'INITIALIZATION',
   matrix: [],
   boardSize: [0, 0],
   padSize: 0,
@@ -31,21 +19,10 @@ const reducer = (state = initialState, action: GameActionTypes): InitialState =>
   switch (action.type) {
     case INITIALIZE_GAME:
       const [height, width] = action.payload.boardSize;
-      const board = Array(height);
-      for (let i = 0; i < height; i++) {
-        board[i] = Array(width);
-        for (let j = 0; j < width; j++) {
-          if (j < action.payload.padSize && i === height - 1) {
-            board[i][j] = 1;
-          } else {
-            board[i][j] = 0;
-          }
-        }
-      }
       return {
         ...state,
-        gameState: "INITIALIZED",
-        matrix: board,
+        gameState: 'PLAYING',
+        matrix: setUpBoard(height, width, action.payload.padSize),
         boardSize: [height, width],
         padSize: action.payload.padSize,
         initialSpeed: action.payload.initialSpeed,
@@ -55,56 +32,33 @@ const reducer = (state = initialState, action: GameActionTypes): InitialState =>
     case START_GAME:
       return { ...state, gameState: "PLAYING" };
     case TICK_ACTION:
-      const movingRow = matrix[padRow];
-      const padPositon = [movingRow.indexOf(1), movingRow.indexOf(1) + padSize];
-      if (padPositon[0] === 0) {
-        direction = "right";
-      } else if (padPositon[1] === boardSize[1]) {
-        direction = "left";
-      }
+      const padPosition = setPadPostion(matrix, padRow, padSize);
+      direction = bounce(padPosition, boardSize[1], direction);
       if (direction === "right") {
-        matrix[padRow][padPositon[0]] = 0;
-        matrix[padRow][padPositon[1]] = 1;
-        // if()
+        matrix = setMoving(matrix, padRow, padPosition[1], padPosition[0]);
       } else if (direction === "left") {
-        matrix[padRow][padPositon[1] - 1] = 0;
-        matrix[padRow][padPositon[0] - 1] = 1;
+        matrix = setMoving(matrix, padRow, padPosition[0] - 1, padPosition[1] - 1);
       }
       return { ...state, matrix: matrix, direction: direction };
-    case UPDATE_MATRIX:
-      return { ...state, matrix: action.payload };
     case CLICK_HANDLER:
-      if (gameState === "INITIALIZED") {
-        return { ...state, gameState: "PLAYING" };
-      }
-      if (gameState === "PLAYING" && padRow > 0) {
+      if (gameState === "PLAYING" && padRow >= 0) {
         if (padRow === state.boardSize[0] - 1) {
-          matrix[padRow].forEach((e, i) => {
-            if (e === 1) {
-              matrix[padRow - 1][i] = 1;
-            }
-          });
+          //FIRST ROW ONLY
+          return { ...state, matrix: levelUpPad(padRow, matrix), padRow: padRow - 1 };
+        } else if (padRow === 0) {
+          //LAST ROW ONLY
+          ({ matrix, padSize } = trimPad(matrix, padRow, padRow + 1));
+          return { ...state, matrix: matrix, gameState: padSize === 0 ? "LOST" : "WON", padSize: padSize };
         } else {
-          padSize = 0
-          matrix[padRow].forEach((e, i) => {
-            if ((matrix[padRow][i] === matrix[padRow + 1][i])) {
-              if(e === 1){
-                matrix[padRow - 1][i] = 1
-                padSize++
-              }
-            }else{
-              matrix[padRow][i] = 0
-            }
-          });
+          // DEFAULT ACTION FOR ROW
+          ({ matrix, padSize } = trimPad(matrix, padRow, padRow + 1));
+          return padSize === 0
+            ? { ...state, matrix: matrix, padSize: padSize, gameState: "LOST" }
+            : { ...state, padRow: padRow - 1, matrix: levelUpPad(padRow,matrix), padSize: padSize };
         }
-        if(padSize === 0 && gameState === 'PLAYING'){
-          return {...state,gameState: 'LOST'}
-        }
-        return { ...state, padRow: padRow - 1, matrix: matrix,padSize: padSize };
-      }else if(padRow === 0 && gameState==='PLAYING'){
-        return {...state,gameState: 'WON'}
+      }else{
+        return {...state,gameState:'INITIALIZATION'}
       }
-      return state
     default:
       return state;
   }

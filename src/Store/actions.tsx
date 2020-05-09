@@ -1,4 +1,4 @@
-import { GameActionTypes, Settings,Cloak, INITIALIZE_GAME,START_GAME,UPDATE_MATRIX,TICK_ACTION,CLICK_HANDLER } from "./types";
+import { GameActionTypes, Settings,Cloak, INITIALIZE_GAME,START_GAME,TICK_ACTION,CLICK_HANDLER } from "./types";
 
 export const initializeGame = (settings: Settings): GameActionTypes => {
   return {
@@ -21,11 +21,5 @@ export const clickHandler = (cloak:Cloak): GameActionTypes => {
   return {
     type: CLICK_HANDLER,
     payload: cloak
-  }
-}
-export const updateMatrix = (matrix: Array<Array<number>>): GameActionTypes => {
-  return {
-    type: UPDATE_MATRIX,
-    payload: matrix
   }
 }

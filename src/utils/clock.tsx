@@ -2,11 +2,10 @@ export const intervalTimer = (callback: () => any, interval: number) => {
   let timerId: number,
     startTime: number,
     remaining: number = 0;
-  let state = 0; //  0 = idle, 1 = running, 2 = paused, 3= resumed
+  let state:number = 0; //  0 = idle, 1 = running, 2 = paused, 3= resumed
 
   const pause = () => {
     if (state !== 1) return;
-    console.log(startTime)
     remaining = interval - (new Date().getDate() - startTime);
     window.clearInterval(timerId);
     state = 2;

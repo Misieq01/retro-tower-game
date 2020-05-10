@@ -7,7 +7,6 @@ const initialState: InitialState = {
   matrix: [],
   boardSize: [0, 0],
   padSize: 0,
-  initialSpeed: 0,
   velocity: 0,
   speed: 0,
   padRow: 0,
@@ -15,7 +14,7 @@ const initialState: InitialState = {
 };
 
 const reducer = (state = initialState, action: GameActionTypes): InitialState => {
-  let { matrix, padSize, padRow, boardSize, direction, gameState } = { ...state };
+  let { matrix, padSize, padRow, boardSize, direction, gameState,speed,velocity } = { ...state };
   switch (action.type) {
     case INITIALIZE_GAME:
       const [height, width] = action.payload.boardSize;
@@ -25,7 +24,7 @@ const reducer = (state = initialState, action: GameActionTypes): InitialState =>
         matrix: setUpBoard(height, width, action.payload.padSize),
         boardSize: [height, width],
         padSize: action.payload.padSize,
-        initialSpeed: action.payload.initialSpeed,
+        speed: action.payload.speed,
         velocity: action.payload.velocity,
         padRow: height - 1,
       };
@@ -44,7 +43,8 @@ const reducer = (state = initialState, action: GameActionTypes): InitialState =>
       if (gameState === "PLAYING" && padRow >= 0) {
         if (padRow === state.boardSize[0] - 1) {
           //FIRST ROW ONLY
-          return { ...state, matrix: levelUpPad(padRow, matrix), padRow: padRow - 1 };
+          action.payload.resume(speed - velocity)
+          return { ...state, matrix: levelUpPad(padRow, matrix), padRow: padRow - 1,speed: speed - velocity };
         } else if (padRow === 0) {
           //LAST ROW ONLY
           ({ matrix, padSize } = trimPad(matrix, padRow, padRow + 1));
@@ -52,9 +52,18 @@ const reducer = (state = initialState, action: GameActionTypes): InitialState =>
         } else {
           // DEFAULT ACTION FOR ROW
           ({ matrix, padSize } = trimPad(matrix, padRow, padRow + 1));
-          return padSize === 0
-            ? { ...state, matrix: matrix, padSize: padSize, gameState: "LOST" }
-            : { ...state, padRow: padRow - 1, matrix: levelUpPad(padRow,matrix), padSize: padSize };
+          if(padSize === 0){
+            return { ...state, matrix: matrix, padSize: padSize, gameState: "LOST" }
+          }else {
+            action.payload.resume(speed - velocity);
+            return {
+                ...state,
+                padRow: padRow - 1,
+                matrix: levelUpPad(padRow, matrix),
+                padSize: padSize,
+                speed: speed - velocity
+              }
+          }
         }
       }else{
         return {...state,gameState:'INITIALIZATION'}

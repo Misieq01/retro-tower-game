@@ -43,7 +43,6 @@ export const setMoving = (
 ): Array<Array<number>> => {
   matrix[padRow][remove] = 0;
   matrix[padRow][add] = 1;
-  //   console.log(matrix)
   return matrix;
 };
 
@@ -71,10 +70,5 @@ export const levelUpPad = (currentRow: number, matrix: Array<Array<number>>): Ar
       matrix[currentRow - 1][i] = 1
     }
   })
-            // matrix[padRow].forEach((e, i) => {
-            //   if (e === 1) {
-            //     matrix[padRow - 1][i] = 1;
-            //   }
-            // });
   return matrix
 };

@@ -11,9 +11,9 @@
     &__wrapper{
         display: flex;
         flex-flow: column nowrap;
-        justify-content: space-around;
+        justify-content: flex-start;
         align-items: center;
-        height: 200px;
+        height: 150px;
     }
     &__title{
         color:rgb(226, 226, 226);

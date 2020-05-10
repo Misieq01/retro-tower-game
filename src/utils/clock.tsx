@@ -11,20 +11,19 @@ export const intervalTimer = (callback: () => any, interval: number) => {
     state = 2;
   };
 
-  const resume =  () => {
+  const resume =  (newSpeed: number) => {
     if (state !== 2) return;
 
     state = 3;
-    window.setTimeout(timeoutCallback, remaining);
+    window.setTimeout(()=>timeoutCallback(newSpeed), remaining);
   };
 
-  const timeoutCallback =  () => {
+  const timeoutCallback =  (speed:number) => {
     if (state !== 3) return;
 
     callback();
-
     startTime = new Date().getTime();
-    timerId = window.setInterval(callback, interval);
+    timerId = window.setInterval(callback, speed);
     state = 1;
   };
 

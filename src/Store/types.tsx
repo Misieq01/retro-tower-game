@@ -12,7 +12,6 @@ export interface InitialState {
   matrix: Array<Array<number>>;
   boardSize: Array<number>;
   padSize: number ;
-  initialSpeed: number ;
   speed: number;
   velocity: number ;
   padRow: number;
@@ -21,12 +20,12 @@ export interface InitialState {
 export interface Settings {
   boardSize: Array<number>;
   padSize: number;
-  initialSpeed: number;
+  speed: number;
   velocity: number;
 }
 
 export interface Cloak {
-    resume: () => void;
+    resume: (speed: number) => void;
     pause: () => void;
 }
 

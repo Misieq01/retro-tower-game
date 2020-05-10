@@ -1,11 +1,12 @@
 import { InitialState } from "./types";
 
 export const getGameState = (state: InitialState) => state.gameState;
+export const getSpeed = (state: InitialState) => state.speed;
 export const getGameSettings = (state: InitialState) => {
   return {
     boardSize: state.boardSize,
     padSize: state.padSize,
-    initialSpeed: state.initialSpeed,
+    speed: state.speed,
     velocity: state.velocity,
   };
 };

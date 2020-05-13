@@ -5,7 +5,6 @@ export const intervalTimer = (callback: () => any, interval: number) => {
   let state:number = 0; //  0 = idle, 1 = running, 2 = paused, 3= resumed
 
   const pause = () => {
-    console.log('pause')
     if (state !== 1) return;
     remaining = interval - (new Date().getTime() - startTime);
     window.clearInterval(timerId);
@@ -13,7 +12,6 @@ export const intervalTimer = (callback: () => any, interval: number) => {
   };
 
   const resume =  (newSpeed: number) => {
-    console.log('resume')
     if (state !== 2) return;
 
     state = 3;
@@ -21,7 +19,6 @@ export const intervalTimer = (callback: () => any, interval: number) => {
   };
 
   const timeoutCallback =  (speed:number) => {
-    console.log('timeoutCallback')
     if (state !== 3) return;
 
     callback();
